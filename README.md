@@ -20,8 +20,8 @@ AI agents are powerful, but they often lack context regarding data privacy (PII)
 
 Inside your Claude Code terminal, run:
 
-/plugin add github.com/MaverickKing17/bastion-guard
-
+[/plugin add github.com/MaverickKing17/bastion-guard
+](https://github.com/MaverickKing17/bastion-guard)
 
 ## 🕹️ How it Works
 
