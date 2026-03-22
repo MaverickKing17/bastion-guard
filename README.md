@@ -57,6 +57,14 @@ At the end of your session, **Bastion Guard** produces a summary report:
 
 We welcome contributions from the security community! If you are interested in adding new guardrail patterns, please see our `CONTRIBUTING.md`.
 
+
+## 🛡️ Security Policy & Compliance
+**Bastion Guard** is built with a security-first mindset. 
+- **Deterministic Scanning:** We utilize regex-based pattern matching for PII (Personally Identifiable Information) to ensure zero-latency execution.
+- **Privacy Guaranteed:** Bastion Guard runs locally within your terminal environment. **No code, data, or logs are ever transmitted to external servers.**
+- **Compliance Ready:** Our audit trail feature (`SECURITY_AUDIT.md`) is designed to support SOC2 and GDPR compliance workflows.
+
+
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
