@@ -441,6 +441,118 @@ export default function App() {
                   </div>
                 )}
 
+                {activeTab === 'engine' && (
+                  <div className="space-y-12">
+                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                      <h2 className="text-2xl font-serif font-medium">Security Engine</h2>
+                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">Bastion Core v2.4.1 · Low-Latency Mode</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <StatCard label="P99 Latency" value="4.2ms" color="text-[#3ddc84]" />
+                      <StatCard label="Throughput" value="1.2GB/s" color="text-blue-500" />
+                      <StatCard label="Memory Footprint" value="12.4MB" color="text-[#d97757]" />
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <section className="space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Performance Metrics</h3>
+                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-8">
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-end">
+                              <span className="text-[12px] font-bold text-[#1a1a1a]">Scan Latency Distribution</span>
+                              <span className="text-[10px] text-[#6b6b6b] font-mono">Real-time (Last 60s)</span>
+                            </div>
+                            <div className="h-24 flex items-end gap-1">
+                              {[40, 35, 45, 30, 55, 40, 35, 60, 45, 50, 30, 40, 35, 45, 30, 55, 40, 35, 60, 45].map((h, i) => (
+                                <motion.div 
+                                  key={i}
+                                  initial={{ height: 0 }}
+                                  animate={{ height: `${h}%` }}
+                                  transition={{ delay: i * 0.02 }}
+                                  className={`flex-1 rounded-t-sm ${h > 50 ? 'bg-red-400/40' : 'bg-[#d97757]/40'}`}
+                                />
+                              ))}
+                            </div>
+                            <div className="flex justify-between text-[10px] text-[#6b6b6b] font-bold uppercase tracking-widest pt-2 border-t border-black/5">
+                              <span>0ms</span>
+                              <span>2.5ms</span>
+                              <span>5.0ms</span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="p-4 bg-black/[0.02] rounded-xl border border-black/5">
+                              <div className="text-[10px] text-[#6b6b6b] font-bold uppercase mb-1">CPU Usage</div>
+                              <div className="text-xl font-serif font-bold text-[#1a1a1a]">0.8%</div>
+                            </div>
+                            <div className="p-4 bg-black/[0.02] rounded-xl border border-black/5">
+                              <div className="text-[10px] text-[#6b6b6b] font-bold uppercase mb-1">Active Threads</div>
+                              <div className="text-xl font-serif font-bold text-[#1a1a1a]">4</div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Heuristic Analysis</h3>
+                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                          <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                              <Search size={20} />
+                            </div>
+                            <div>
+                              <div className="text-[14px] font-bold text-[#1a1a1a]">Entropy-Based Detection</div>
+                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                                BastionAudit uses Shannon entropy calculations to identify high-randomness strings (API keys, secrets) that bypass traditional regex patterns.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                              <Database size={20} />
+                            </div>
+                            <div>
+                              <div className="text-[14px] font-bold text-[#1a1a1a]">Semantic Interception</div>
+                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                                Beyond simple string matching, the engine analyzes command context to detect destructive patterns like <code className="bg-black/5 px-1 rounded">rm -rf /</code> or unauthorized database exfiltration.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-black/5">
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-[11px] font-bold text-[#1a1a1a]">Engine Health</span>
+                              <Badge variant="info">Optimized</Badge>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-[11px]">
+                                <span className="text-[#6b6b6b]">Uptime</span>
+                                <span className="text-[#1a1a1a] font-mono">14d 06h 22m</span>
+                              </div>
+                              <div className="flex justify-between text-[11px]">
+                                <span className="text-[#6b6b6b]">Last Pattern Sync</span>
+                                <span className="text-[#1a1a1a]">2026-03-22 09:14 UTC</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                    </div>
+
+                    <section className="space-y-6">
+                      <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Integration Status</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <IntegrationItem name="Claude Code" status="Connected" icon={<Terminal size={14} />} />
+                        <IntegrationItem name="GKE Cluster" status="Active" icon={<Network size={14} />} />
+                        <IntegrationItem name="GitHub Actions" status="Standby" icon={<Activity size={14} />} />
+                        <IntegrationItem name="Slack Alerts" status="Connected" icon={<ExternalLink size={14} />} />
+                      </div>
+                    </section>
+                  </div>
+                )}
+
                 {activeTab === 'log' && (
                   <div className="space-y-8">
                     <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
@@ -693,6 +805,23 @@ function RemediationStep({ n, text }: { n: number, text: React.ReactNode }) {
     <div className="flex gap-3 text-[12px] text-[#6b6b6b]">
       <span className="text-[#1a1a1a] font-medium">{n}.</span>
       <span>{text}</span>
+    </div>
+  );
+}
+
+function IntegrationItem({ name, status, icon }: { name: string, status: string, icon: React.ReactNode }) {
+  return (
+    <div className="bg-white border border-black/5 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center text-[#6b6b6b]">
+          {icon}
+        </div>
+        <span className="text-[12px] font-bold text-[#1a1a1a]">{name}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <div className={`w-1.5 h-1.5 rounded-full ${status === 'Active' || status === 'Connected' ? 'bg-[#3ddc84]' : 'bg-amber-400'}`} />
+        <span className="text-[10px] font-bold text-[#6b6b6b] uppercase tracking-wider">{status}</span>
+      </div>
     </div>
   );
 }
