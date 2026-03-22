@@ -1,4 +1,4 @@
-<# 🛡️ Bastion Guard (safe-code-audit)
+ 🛡️ Bastion Guard (safe-code-audit)
 
 **Bastion Guard** is a high-performance security and privacy plugin for [Claude Code](https://code.claude.com). Powered by the **Bastion Audit** engine, it provides a "Zero-Trust" layer for developers working in sensitive environments like Financial Services, Insurance, and Healthcare.
 
