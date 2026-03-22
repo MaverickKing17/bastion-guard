@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+<# 🛡️ Bastion Guard (safe-code-audit)
 
-# Run and deploy your AI Studio app
+**Bastion Guard** is a high-performance security and privacy plugin for [Claude Code](https://code.claude.com). Powered by the **Bastion Audit** engine, it provides a "Zero-Trust" layer for developers working in sensitive environments like Financial Services, Insurance, and Healthcare.
 
-This contains everything you need to run your app locally.
+[![Claude Code Compatible](https://img.shields.io/badge/Claude%20Code-Compatible-green)](https://code.claude.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Security: Enterprise](https://img.shields.io/badge/Security-Enterprise--Grade-red)](#)
 
-View your app in AI Studio: https://ai.studio/apps/54e5422e-56aa-4f80-a2ff-b1add20d7f26
+## 🚀 Overview
 
-## Run Locally
+AI agents are powerful, but they often lack context regarding data privacy (PII) and industry-specific security compliance. **Bastion Guard** acts as an invisible shield, intercepting commands and file writes before they leave your terminal.
 
-**Prerequisites:**  Node.js
+### Key Features
+* **Real-time PII Detection:** Automatically flags and masks Emails, API Keys, and Canadian SINs before they are sent to the LLM.
+* **Pre-Flight Interception:** Uses `PreToolUse` hooks to stop dangerous `bash` or `write` commands before they execute.
+* **Financial Grade Guardrails:** Specialized patterns for high-compliance industries.
+* **Automated Audit Trails:** Generates a `SECURITY_AUDIT.md` report for every session to satisfy internal compliance requirements.
 
+## 🛠️ Installation
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Inside your Claude Code terminal, run:
+
+```bash
+/plugin add [github.com/your-username/bastion-guard](https://github.com/your-username/bastion-guard)
