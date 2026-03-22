@@ -23,3 +23,44 @@ Inside your Claude Code terminal, run:
 /plugin add github.com/MaverickKing17/bastion-guard
 
 
+## 🕹️ How it Works
+
+**Bastion Guard** operates at the **Middleware Layer**. When Claude attempts to use a tool (like writing to a file), the plugin intercepts the content:
+
+1. **Intercept:** The `security-check.js` hook captures the proposed tool parameters.
+2. **Scan:** The **Bastion Audit** engine runs high-speed regex and entropy checks.
+3. **Action:**
+   * **Green:** No threats detected. The command proceeds.
+   * **Red:** Threat detected. The process is blocked, and an ANSI-colored alert is shown in your terminal.
+
+## ⚙️ Configuration
+
+Use the built-in skill to customize your security posture directly within your Claude session:
+
+> *"Claude, set Bastion Guard to high-strictness mode."*
+
+**Available Modes:**
+* **Default:** Standard PII and credential scanning.
+* **Financial:** Enhanced monitoring for account numbers and transaction patterns.
+* **Red-Team:** Detects potential prompt injection or jailbreak attempts.
+
+## 📊 Security Audit Log
+
+At the end of your session, **Bastion Guard** produces a summary report:
+
+| Timestamp | Event Type | Action Taken | Logic Engine |
+| :--- | :--- | :--- | :--- |
+| 14:02:11 | PII Detected (Email) | Redacted | Bastion Core |
+| 14:15:45 | Secret Key (AWS) | Blocked | Bastion Entropy |
+
+## 🤝 Contributing
+
+We welcome contributions from the security community! If you are interested in adding new guardrail patterns, please see our `CONTRIBUTING.md`.
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+*Built with ❤️ in Toronto for the global developer community.*
+
