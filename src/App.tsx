@@ -23,7 +23,8 @@ import {
   Clock,
   ExternalLink,
   Copy,
-  Download
+  Download,
+  Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { performSecurityScan, ScanResult } from './security-check';
@@ -108,6 +109,38 @@ export default function App() {
   const [activeAlert, setActiveAlert] = useState<ScanResult | null>(null);
   const [countdown, setCountdown] = useState(30);
   const [isScanning, setIsScanning] = useState(false);
+
+  useEffect(() => {
+    // Initial terminal output
+    setTerminalHistory([
+      { 
+        cmd: 'bastion --init', 
+        output: (
+          <div className="space-y-2 text-white/60">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#3ddc84] animate-pulse" />
+              <span>Bastion Core v2.4.1 initialized successfully.</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#3ddc84]" />
+              <span>Scanning workspace for PII and security vulnerabilities...</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#3ddc84]" />
+              <span>Security rules loaded: 4 active, 1 standby.</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#3ddc84]" />
+              <span>Claude Code integration: <span className="text-[#3ddc84] font-bold">CONNECTED (MAX 20X)</span></span>
+            </div>
+            <div className="mt-4 text-[#d97757] font-bold tracking-widest text-[10px] uppercase">
+              Ready for command interception.
+            </div>
+          </div>
+        )
+      }
+    ]);
+  }, []);
 
   // Simulation of terminal
   const handleCommand = (e: React.FormEvent) => {
@@ -270,6 +303,33 @@ export default function App() {
                       <StatCard label="Blocked" value="3" color="text-red-500" />
                       <StatCard label="Auto-masked" value="2" color="text-[#d97757]" />
                     </div>
+
+                    <section className="space-y-6">
+                      <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Claude Code Program Status</h3>
+                      <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                        <div className="flex items-start gap-6">
+                          <div className="w-12 h-12 rounded-2xl bg-[#d97757]/10 flex items-center justify-center text-[#d97757] shrink-0">
+                            <Award size={24} />
+                          </div>
+                          <div className="space-y-2">
+                            <div className="text-[16px] font-bold text-[#1a1a1a]">Claude for Open Source Program</div>
+                            <p className="text-[13px] text-[#6b6b6b] leading-relaxed">
+                              BastionAudit is optimized for the <span className="text-[#1a1a1a] font-bold">Claude Max 20x</span> plan, providing 20x usage capacity and full access to the Claude Code terminal tool.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-black/5">
+                          <div className="flex items-center gap-3 text-[12px] text-[#6b6b6b]">
+                            <CheckCircle2 size={16} className="text-[#3ddc84]" />
+                            <span>5,000+ GitHub Stars Requirement Met</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-[12px] text-[#6b6b6b]">
+                            <CheckCircle2 size={16} className="text-[#3ddc84]" />
+                            <span>1M+ Monthly NPM Downloads Met</span>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
 
                     <section className="space-y-6">
                       <div className="flex items-center justify-between">
