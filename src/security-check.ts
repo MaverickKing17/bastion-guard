@@ -32,6 +32,7 @@ export interface ScanResult {
     severity: number; // 1-10
   }[];
   verdict: 'PASS' | 'WARN' | 'BLOCK';
+  maskedContent: string;
 }
 
 /**
@@ -40,6 +41,7 @@ export interface ScanResult {
  */
 export function performSecurityScan(content: string, mode: 'BLOCK' | 'LOG'): ScanResult {
   const threats: ScanResult['threats'] = [];
+  let maskedContent = content;
 
   // Scan for API Keys
   for (const [provider, regex] of Object.entries(SECURITY_PATTERNS.API_KEYS)) {
@@ -105,5 +107,26 @@ export function performSecurityScan(content: string, mode: 'BLOCK' | 'LOG'): Sca
     verdict = 'WARN';
   }
 
-  return { threats, verdict };
+  // Apply masking if threat detected
+  if (verdict !== 'PASS') {
+    // Mask Emails: test@example.com -> ****@****.com
+    maskedContent = maskedContent.replace(SECURITY_PATTERNS.EMAIL, (match) => {
+      const parts = match.split('@');
+      if (parts.length !== 2) return match;
+      const [user, domain] = parts;
+      const domainParts = domain.split('.');
+      if (domainParts.length < 2) return '*'.repeat(user.length) + '@' + '*'.repeat(domain.length);
+      
+      const tld = domainParts.pop();
+      const domainName = domainParts.join('.');
+      return '*'.repeat(user.length) + '@' + '*'.repeat(domainName.length) + '.' + tld;
+    });
+
+    // Mask SINs: 123-456-789 -> ***-***-***
+    maskedContent = maskedContent.replace(SECURITY_PATTERNS.CANADIAN_SIN, (match) => {
+      return match.replace(/\d/g, '*');
+    });
+  }
+
+  return { threats, verdict, maskedContent };
 }
