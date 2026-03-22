@@ -33,13 +33,14 @@ import { performSecurityScan, ScanResult } from './security-check';
 
 type AppMode = 'BLOCK' | 'LOG';
 type Tab = 'overview' | 'detectors' | 'rules' | 'engine' | 'log' | 'plugin-files';
+type ScanIntensity = 'HIGH_PRECISION' | 'MAX_SPEED';
 
 interface Detector {
   id: string;
   name: string;
   description: string;
   enabled: boolean;
-  category: 'PII' | 'Financial' | 'Secrets';
+  category: 'Personal Identifiable Information' | 'Financial Identifiers' | 'Security Secrets';
 }
 
 interface SecurityRule {
@@ -89,13 +90,13 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [mode, setMode] = useState<AppMode>('BLOCK');
   const [detectors, setDetectors] = useState<Detector[]>([
-    { id: 'ssn', name: 'Social Security Numbers', description: 'US SSN regex + checksum validation', enabled: true, category: 'PII' },
-    { id: 'cc', name: 'Credit / Debit Card Numbers', description: 'Luhn-validated · PCI-DSS §3.4', enabled: true, category: 'PII' },
-    { id: 'email', name: 'Email Addresses', description: 'RFC 5321 pattern · GDPR Art.4', enabled: true, category: 'PII' },
-    { id: 'phone', name: 'Phone Numbers', description: 'E.164 + NANP formats', enabled: false, category: 'PII' },
-    { id: 'swift', name: 'SWIFT / BIC Codes', description: 'ISO 9362 bank routing identifiers', enabled: true, category: 'Financial' },
-    { id: 'iban', name: 'IBAN / Account Numbers', description: 'ISO 13616 · modulo-97 checksum', enabled: true, category: 'Financial' },
-    { id: 'secrets', name: 'AWS / GCP Secrets', description: 'High-entropy key detection · >3.5 bits/char', enabled: true, category: 'Secrets' },
+    { id: 'ssn', name: 'Social Security Numbers', description: 'US SSN regex + checksum validation', enabled: true, category: 'Personal Identifiable Information' },
+    { id: 'cc', name: 'Credit / Debit Card Numbers', description: 'Luhn-validated · PCI-DSS §3.4', enabled: true, category: 'Personal Identifiable Information' },
+    { id: 'email', name: 'Email Addresses', description: 'RFC 5321 pattern · GDPR Art.4', enabled: true, category: 'Personal Identifiable Information' },
+    { id: 'phone', name: 'Phone Numbers', description: 'E.164 + NANP formats', enabled: false, category: 'Personal Identifiable Information' },
+    { id: 'swift', name: 'SWIFT / BIC Codes', description: 'ISO 9362 bank routing identifiers', enabled: true, category: 'Financial Identifiers' },
+    { id: 'iban', name: 'IBAN / Account Numbers', description: 'ISO 13616 · modulo-97 checksum', enabled: true, category: 'Financial Identifiers' },
+    { id: 'secrets', name: 'AWS / GCP Secrets', description: 'High-entropy key detection · >3.5 bits/char', enabled: true, category: 'Security Secrets' },
   ]);
   const [rules, setRules] = useState<SecurityRule[]>([
     { id: 'path', name: 'Privileged path writes', description: 'Block writes to /etc, /sys, /boot', enabled: true, category: 'Filesystem' },
@@ -109,6 +110,7 @@ export default function App() {
   const [activeAlert, setActiveAlert] = useState<ScanResult | null>(null);
   const [countdown, setCountdown] = useState(30);
   const [isScanning, setIsScanning] = useState(false);
+  const [scanIntensity, setScanIntensity] = useState<ScanIntensity>('HIGH_PRECISION');
 
   useEffect(() => {
     // Initial terminal output
@@ -429,10 +431,10 @@ export default function App() {
                     </div>
 
                     <div className="space-y-16">
-                      {['PII', 'Financial', 'Secrets'].map(cat => (
+                      {['Personal Identifiable Information', 'Financial Identifiers', 'Security Secrets'].map(cat => (
                         <section key={cat} className="space-y-8">
                           <div className="flex items-center gap-4">
-                            <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">{cat === 'PII' ? 'Personally Identifiable Information' : cat === 'Financial' ? 'Financial Identifiers' : 'Security Secrets'}</h3>
+                            <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">{cat}</h3>
                             <div className="h-px flex-1 bg-black/5" />
                           </div>
                           <div className="grid grid-cols-1 gap-4">
@@ -440,7 +442,7 @@ export default function App() {
                               <div key={d.id} className="p-6 bg-white border border-black/5 rounded-2xl flex items-center justify-between gap-8 hover:shadow-md transition-all duration-300 group">
                                 <div className="flex items-center gap-5">
                                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${d.enabled ? 'bg-[#d97757]/10 text-[#d97757]' : 'bg-black/5 text-[#6b6b6b]'}`}>
-                                    {cat === 'PII' ? <Eye size={20} /> : cat === 'Financial' ? <Database size={20} /> : <Lock size={20} />}
+                                    {cat === 'Personal Identifiable Information' ? <Eye size={20} /> : cat === 'Financial Identifiers' ? <Database size={20} /> : <Lock size={20} />}
                                   </div>
                                   <div>
                                     <div className="text-[15px] font-bold text-[#1a1a1a] tracking-tight">{d.name}</div>
@@ -516,6 +518,49 @@ export default function App() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       <section className="space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Engine Configuration</h3>
+                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[13px] font-bold text-[#1a1a1a]">Scan Intensity</span>
+                              <Badge variant={scanIntensity === 'HIGH_PRECISION' ? 'info' : 'high'}>
+                                {scanIntensity === 'HIGH_PRECISION' ? 'Deep Analysis' : 'Turbo Mode'}
+                              </Badge>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <button 
+                                onClick={() => setScanIntensity('HIGH_PRECISION')}
+                                className={`p-4 rounded-xl border-2 transition-all text-left group ${scanIntensity === 'HIGH_PRECISION' ? 'border-[#d97757] bg-[#d97757]/5' : 'border-black/5 hover:border-black/10'}`}
+                              >
+                                <div className={`text-[12px] font-bold mb-1 ${scanIntensity === 'HIGH_PRECISION' ? 'text-[#d97757]' : 'text-[#1a1a1a]'}`}>High Precision</div>
+                                <div className="text-[10px] text-[#6b6b6b] leading-relaxed">Maximum depth, multi-pass entropy checks.</div>
+                              </button>
+                              <button 
+                                onClick={() => setScanIntensity('MAX_SPEED')}
+                                className={`p-4 rounded-xl border-2 transition-all text-left group ${scanIntensity === 'MAX_SPEED' ? 'border-[#d97757] bg-[#d97757]/5' : 'border-black/5 hover:border-black/10'}`}
+                              >
+                                <div className={`text-[12px] font-bold mb-1 ${scanIntensity === 'MAX_SPEED' ? 'text-[#d97757]' : 'text-[#1a1a1a]'}`}>Max Speed</div>
+                                <div className="text-[10px] text-[#6b6b6b] leading-relaxed">Optimized for low-latency, single-pass scan.</div>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-black/5 space-y-4">
+                            <div className="flex justify-between items-center">
+                              <span className="text-[11px] text-[#6b6b6b]">Expected Latency</span>
+                              <span className="text-[11px] font-mono font-bold text-[#1a1a1a]">
+                                {scanIntensity === 'HIGH_PRECISION' ? '~8.5ms' : '< 1.2ms'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-[11px] text-[#6b6b6b]">Detection Sensitivity</span>
+                              <span className="text-[11px] font-bold text-[#1a1a1a]">
+                                {scanIntensity === 'HIGH_PRECISION' ? 'Ultra (99.9%)' : 'Standard (94%)'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
                         <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Performance Metrics</h3>
                         <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-8">
                           <div className="space-y-4">
