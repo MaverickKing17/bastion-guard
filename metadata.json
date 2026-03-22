@@ -1,0 +1,5 @@
+{
+  "name": "BastionAudit: Safe Code Plugin",
+  "description": "A high-performance security scanner and configuration dashboard for agentic workflows, featuring real-time PII detection and command interception.",
+  "requestFramePermissions": []
+}
