@@ -84,4 +84,3 @@ const monitor = new BastionMonitor({
 
 ---
 
-**Would you like me to create a "Security Audit Log" template for your GitHub Wiki that documents how these specific 1,847 events were intercepted?**
