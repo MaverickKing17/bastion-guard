@@ -60,9 +60,9 @@ interface SecurityRule {
 
 const Badge = ({ children, variant }: { children: React.ReactNode, variant: 'crit' | 'high' | 'info' }) => {
   const styles = {
-    crit: "bg-red-50 text-red-600 border-red-100/50",
-    high: "bg-orange-50 text-orange-600 border-orange-100/50",
-    info: "bg-blue-50 text-blue-600 border-blue-100/50"
+    crit: "bg-red-950/30 text-red-400 border-red-900/30",
+    high: "bg-orange-950/30 text-orange-400 border-orange-900/30",
+    info: "bg-blue-950/30 text-blue-400 border-blue-900/30"
   };
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase border shadow-sm ${styles[variant]}`}>
@@ -79,10 +79,10 @@ const Toggle = ({ enabled, onChange, label }: { enabled: boolean, onChange: (v: 
         onClick={() => onChange(!enabled)}
         className="relative w-[40px] h-[22px] cursor-pointer focus:outline-none group"
       >
-        <div className={`absolute inset-0 rounded-full transition-all duration-300 ${enabled ? 'bg-[#d97757] shadow-inner' : 'bg-black/10'}`} />
-        <div className={`absolute top-[3px] left-[3px] w-[16px] h-[16px] bg-white rounded-full shadow-md transition-all duration-300 transform ${enabled ? 'translate-x-[18px]' : 'translate-x-0'} group-hover:scale-110`} />
+        <div className={`absolute inset-0 rounded-full transition-all duration-300 ${enabled ? 'bg-[#d97757] shadow-inner' : 'bg-white/5'}`} />
+        <div className={`absolute top-[3px] left-[3px] w-[16px] h-[16px] bg-[#f5f5f5] rounded-full shadow-md transition-all duration-300 transform ${enabled ? 'translate-x-[18px]' : 'translate-x-0'} group-hover:scale-110`} />
       </button>
-      <span className={`text-[10px] font-bold tracking-widest min-w-[26px] text-right transition-colors duration-300 ${enabled ? 'text-[#d97757]' : 'text-[#6b6b6b]'}`}>
+      <span className={`text-[10px] font-bold tracking-widest min-w-[26px] text-right transition-colors duration-300 ${enabled ? 'text-[#d97757]' : 'text-[#a3a3a3]'}`}>
         {enabled ? 'ON' : 'OFF'}
       </span>
     </div>
@@ -291,69 +291,69 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fbfaf8] text-[#1a1a1a] font-sans selection:bg-[#d97757]/20">
+    <div className="min-h-screen bg-[#0a0a0a] text-[#f5f5f5] font-sans selection:bg-[#d97757]/30">
       {/* --- Main Layout --- */}
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[280px_1fr] h-screen overflow-hidden border-x border-black/5">
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[280px_1fr] h-screen overflow-hidden border-x border-white/5">
         
         {/* --- Sidebar --- */}
-        <aside className="bg-[#f3f2ef] border-r border-black/5 flex flex-col shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
-          <div className="p-8 flex items-center gap-4 border-b border-black/5">
-            <div className="w-12 h-12 bg-white border border-black/5 rounded-2xl flex items-center justify-center shadow-sm">
+        <aside className="bg-[#111111] border-r border-white/5 flex flex-col shadow-[1px_0_10px_rgba(0,0,0,0.2)]">
+          <div className="p-8 flex items-center gap-4 border-b border-white/5">
+            <div className="w-12 h-12 bg-[#1a1a1a] border border-white/5 rounded-2xl flex items-center justify-center shadow-sm">
               <Shield className="w-7 h-7 text-[#d97757]" />
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight font-serif text-[#1a1a1a]">BastionAudit</h1>
-              <p className="text-[10px] text-[#6b6b6b] uppercase tracking-[0.2em] font-sans font-bold opacity-70">Security Engine</p>
+              <h1 className="text-base font-bold tracking-tight font-serif text-[#f5f5f5]">BastionAudit</h1>
+              <p className="text-[10px] text-[#a3a3a3] uppercase tracking-[0.2em] font-sans font-bold opacity-70">Security Engine</p>
             </div>
           </div>
 
           <nav className="flex-1 py-8 overflow-y-auto">
-            <div className="px-8 mb-4 text-[10px] uppercase tracking-[0.15em] text-[#6b6b6b] font-bold opacity-60">Configuration</div>
+            <div className="px-8 mb-4 text-[10px] uppercase tracking-[0.15em] text-[#a3a3a3] font-bold opacity-60">Configuration</div>
             <NavItem active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<Activity size={16} />} label="Overview" />
             <NavItem active={activeTab === 'detectors'} onClick={() => setActiveTab('detectors')} icon={<Search size={16} />} label="PII Detectors" />
             <NavItem active={activeTab === 'rules'} onClick={() => setActiveTab('rules')} icon={<Lock size={16} />} label="Security Rules" />
             <NavItem active={activeTab === 'compliance'} onClick={() => setActiveTab('compliance')} icon={<FileCheck size={16} />} label="Compliance" />
             <NavItem active={activeTab === 'engine'} onClick={() => setActiveTab('engine')} icon={<Cpu size={16} />} label="Engine" />
             
-            <div className="mx-8 my-6 border-t border-black/5" />
+            <div className="mx-8 my-6 border-t border-white/5" />
             
-            <div className="px-8 mb-4 text-[10px] uppercase tracking-[0.15em] text-[#6b6b6b] font-bold opacity-60">Session</div>
+            <div className="px-8 mb-4 text-[10px] uppercase tracking-[0.15em] text-[#a3a3a3] font-bold opacity-60">Session</div>
             <NavItem active={activeTab === 'log'} onClick={() => setActiveTab('log')} icon={<FileText size={16} />} label="Audit Log" />
             <NavItem active={activeTab === 'plugin-files'} onClick={() => setActiveTab('plugin-files')} icon={<Terminal size={16} />} label="Plugin Files" />
           </nav>
 
-          <div className="p-6 bg-[#ebeae6]/50 border-t border-black/5">
+          <div className="p-6 bg-[#1a1a1a]/30 border-t border-white/5">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] text-[#6b6b6b] uppercase font-bold tracking-wider">System Status</span>
+              <span className="text-[10px] text-[#a3a3a3] uppercase font-bold tracking-wider">System Status</span>
               <span className="flex items-center gap-2 text-[10px] text-[#3ddc84] font-bold">
                 <div className="w-2 h-2 rounded-full bg-[#3ddc84] shadow-[0_0_8px_rgba(61,220,132,0.5)] animate-pulse" />
                 ACTIVE
               </span>
             </div>
-            <div className="text-[10px] text-[#6b6b6b] font-medium opacity-60">Build v2.4.1-stable · Enterprise</div>
+            <div className="text-[10px] text-[#a3a3a3] font-medium opacity-60">Build v2.4.1-stable · Enterprise</div>
           </div>
         </aside>
 
         {/* --- Main Content --- */}
-        <main className="flex flex-col overflow-hidden bg-[#fbfaf8]">
+        <main className="flex flex-col overflow-hidden bg-[#0a0a0a]">
           {/* Header */}
-          <header className="h-20 border-b border-black/5 bg-white/50 backdrop-blur-md flex items-center justify-between px-10 sticky top-0 z-10">
-            <div className="flex items-center gap-3 text-[12px] text-[#6b6b6b]">
-              <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">/bastion-config</span>
+          <header className="h-20 border-b border-white/5 bg-[#111111]/80 backdrop-blur-md flex items-center justify-between px-10 sticky top-0 z-10">
+            <div className="flex items-center gap-3 text-[12px] text-[#a3a3a3]">
+              <span className="hover:text-[#f5f5f5] cursor-pointer transition-colors">/bastion-config</span>
               <ChevronRight size={14} className="opacity-40" />
-              <span className="text-[#1a1a1a] font-bold capitalize tracking-tight">{activeTab.replace('-', ' ')}</span>
+              <span className="text-[#f5f5f5] font-bold capitalize tracking-tight">{activeTab.replace('-', ' ')}</span>
             </div>
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3 pr-6 border-r border-black/5">
+              <div className="flex items-center gap-3 pr-6 border-r border-white/5">
                 <div className="text-right">
-                  <div className="text-[11px] font-bold text-[#1a1a1a]">King Narmer</div>
-                  <div className="text-[9px] text-[#6b6b6b] uppercase tracking-wider font-bold opacity-60">Security Admin</div>
+                  <div className="text-[11px] font-bold text-[#f5f5f5]">King Narmer</div>
+                  <div className="text-[9px] text-[#a3a3a3] uppercase tracking-wider font-bold opacity-60">Security Admin</div>
                 </div>
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#d97757] to-[#b45309] flex items-center justify-center text-white font-bold text-xs shadow-md">
                   KN
                 </div>
               </div>
-              <button className="text-[#6b6b6b] hover:text-[#1a1a1a] transition-all transform hover:rotate-90 duration-300">
+              <button className="text-[#a3a3a3] hover:text-[#f5f5f5] transition-all transform hover:rotate-90 duration-300">
                 <Settings size={18} />
               </button>
             </div>
@@ -371,9 +371,9 @@ export default function App() {
               >
                 {activeTab === 'overview' && (
                   <div className="space-y-8">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">Overview</h2>
-                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">NorthShield Financial · Production</span>
+                      <span className="text-[10.5px] text-[#a3a3a3] uppercase tracking-widest font-bold">NorthShield Financial · Production</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -383,25 +383,25 @@ export default function App() {
                     </div>
 
                     <section className="space-y-6">
-                      <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Claude Code Program Status</h3>
-                      <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                      <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">Claude Code Program Status</h3>
+                      <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-sm space-y-6">
                         <div className="flex items-start gap-6">
                           <div className="w-12 h-12 rounded-2xl bg-[#d97757]/10 flex items-center justify-center text-[#d97757] shrink-0">
                             <Award size={24} />
                           </div>
                           <div className="space-y-2">
-                            <div className="text-[16px] font-bold text-[#1a1a1a]">Claude for Open Source Program</div>
-                            <p className="text-[13px] text-[#6b6b6b] leading-relaxed">
-                              BastionAudit is optimized for the <span className="text-[#1a1a1a] font-bold">Claude Max 20x</span> plan, providing 20x usage capacity and full access to the Claude Code terminal tool.
+                            <div className="text-[16px] font-bold text-[#f5f5f5]">Claude for Open Source Program</div>
+                            <p className="text-[13px] text-[#a3a3a3] leading-relaxed">
+                              BastionAudit is optimized for the <span className="text-[#f5f5f5] font-bold">Claude Max 20x</span> plan, providing 20x usage capacity and full access to the Claude Code terminal tool.
                             </p>
                           </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-black/5">
-                          <div className="flex items-center gap-3 text-[12px] text-[#6b6b6b]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                          <div className="flex items-center gap-3 text-[12px] text-[#a3a3a3]">
                             <CheckCircle2 size={16} className="text-[#3ddc84]" />
                             <span>5,000+ GitHub Stars Requirement Met</span>
                           </div>
-                          <div className="flex items-center gap-3 text-[12px] text-[#6b6b6b]">
+                          <div className="flex items-center gap-3 text-[12px] text-[#a3a3a3]">
                             <CheckCircle2 size={16} className="text-[#3ddc84]" />
                             <span>1M+ Monthly NPM Downloads Met</span>
                           </div>
@@ -411,8 +411,8 @@ export default function App() {
 
                     <section className="space-y-6">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Global Enforcement Mode</h3>
-                        <div className="flex items-center gap-2 px-3 py-1 bg-black/[0.03] rounded-md border border-black/5 text-[9px] text-[#6b6b6b] font-bold uppercase tracking-widest">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">Global Enforcement Mode</h3>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-white/[0.03] rounded-md border border-white/5 text-[9px] text-[#a3a3a3] font-bold uppercase tracking-widest">
                           <Shield size={10} />
                           Active Protection
                         </div>
@@ -420,21 +420,21 @@ export default function App() {
                       <div className="flex gap-4">
                         <button 
                           onClick={() => setMode('BLOCK')}
-                          className={`flex-1 px-8 py-4 rounded-2xl border-2 font-bold text-[13px] tracking-tight transition-all duration-300 flex items-center justify-center gap-3 shadow-sm ${mode === 'BLOCK' ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20' : 'bg-white border-black/5 text-[#6b6b6b] hover:border-red-200 hover:text-red-600'}`}
+                          className={`flex-1 px-8 py-4 rounded-2xl border-2 font-bold text-[13px] tracking-tight transition-all duration-300 flex items-center justify-center gap-3 shadow-sm ${mode === 'BLOCK' ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20' : 'bg-[#141414] border-white/5 text-[#a3a3a3] hover:border-red-900/50 hover:text-red-500'}`}
                         >
                           <XCircle size={18} />
                           STRICT BLOCK
                         </button>
                         <button 
                           onClick={() => setMode('LOG')}
-                          className={`flex-1 px-8 py-4 rounded-2xl border-2 font-bold text-[13px] tracking-tight transition-all duration-300 flex items-center justify-center gap-3 shadow-sm ${mode === 'LOG' ? 'bg-[#d97757] text-white border-[#d97757] shadow-lg shadow-[#d97757]/20' : 'bg-white border-black/5 text-[#6b6b6b] hover:border-orange-200 hover:text-[#d97757]'}`}
+                          className={`flex-1 px-8 py-4 rounded-2xl border-2 font-bold text-[13px] tracking-tight transition-all duration-300 flex items-center justify-center gap-3 shadow-sm ${mode === 'LOG' ? 'bg-[#d97757] text-white border-[#d97757] shadow-lg shadow-[#d97757]/20' : 'bg-[#141414] border-white/5 text-[#a3a3a3] hover:border-orange-900/50 hover:text-[#d97757]'}`}
                         >
                           <Activity size={18} />
                           LOG & MONITOR
                         </button>
                       </div>
-                      <div className={`p-6 rounded-2xl border-2 text-[13px] leading-relaxed transition-all duration-500 flex items-start gap-4 ${mode === 'BLOCK' ? 'bg-red-50/50 border-red-100 text-red-800' : 'bg-orange-50/50 border-orange-100 text-orange-800'}`}>
-                        <div className={`mt-0.5 p-1.5 rounded-lg ${mode === 'BLOCK' ? 'bg-red-100' : 'bg-orange-100'}`}>
+                      <div className={`p-6 rounded-2xl border-2 text-[13px] leading-relaxed transition-all duration-500 flex items-start gap-4 ${mode === 'BLOCK' ? 'bg-red-950/20 border-red-900/30 text-red-200' : 'bg-orange-950/20 border-orange-900/30 text-orange-200'}`}>
+                        <div className={`mt-0.5 p-1.5 rounded-lg ${mode === 'BLOCK' ? 'bg-red-900/40' : 'bg-orange-900/40'}`}>
                           <AlertTriangle size={16} />
                         </div>
                         <div>
@@ -501,28 +501,28 @@ export default function App() {
 
                 {activeTab === 'detectors' && (
                   <div className="space-y-8">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">PII Detectors</h2>
-                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">Configure data classes for detection</span>
+                      <span className="text-[10.5px] text-[#a3a3a3] uppercase tracking-widest font-bold">Configure data classes for detection</span>
                     </div>
 
                     <div className="space-y-16">
                       {['Personal Identifiable Information', 'Financial Identifiers', 'Security Secrets'].map(cat => (
                         <section key={cat} className="space-y-8">
                           <div className="flex items-center gap-4">
-                            <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">{cat}</h3>
-                            <div className="h-px flex-1 bg-black/5" />
+                            <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">{cat}</h3>
+                            <div className="h-px flex-1 bg-white/5" />
                           </div>
                           <div className="grid grid-cols-1 gap-4">
                             {detectors.filter(d => d.category === cat).map(d => (
-                              <div key={d.id} className="p-6 bg-white border border-black/5 rounded-2xl flex items-center justify-between gap-8 hover:shadow-md transition-all duration-300 group">
+                              <div key={d.id} className="p-6 bg-[#141414] border border-white/5 rounded-2xl flex items-center justify-between gap-8 hover:shadow-md transition-all duration-300 group">
                                 <div className="flex items-center gap-5">
-                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${d.enabled ? 'bg-[#d97757]/10 text-[#d97757]' : 'bg-black/5 text-[#6b6b6b]'}`}>
+                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${d.enabled ? 'bg-[#d97757]/10 text-[#d97757]' : 'bg-white/5 text-[#a3a3a3]'}`}>
                                     {cat === 'Personal Identifiable Information' ? <Eye size={20} /> : cat === 'Financial Identifiers' ? <Database size={20} /> : <Lock size={20} />}
                                   </div>
                                   <div>
-                                    <div className="text-[15px] font-bold text-[#1a1a1a] tracking-tight">{d.name}</div>
-                                    <div className="text-[12px] text-[#6b6b6b] mt-1 font-medium opacity-70">{d.description}</div>
+                                    <div className="text-[15px] font-bold text-[#f5f5f5] tracking-tight">{d.name}</div>
+                                    <div className="text-[12px] text-[#a3a3a3] mt-1 font-medium opacity-70">{d.description}</div>
                                   </div>
                                 </div>
                                 <Toggle 
@@ -541,28 +541,28 @@ export default function App() {
 
                 {activeTab === 'rules' && (
                   <div className="space-y-8">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">Security Rules</h2>
-                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">System-level command restrictions</span>
+                      <span className="text-[10.5px] text-[#a3a3a3] uppercase tracking-widest font-bold">System-level command restrictions</span>
                     </div>
 
                     <div className="space-y-16">
                       {['Filesystem', 'Database', 'Network'].map(cat => (
                         <section key={cat} className="space-y-8">
                           <div className="flex items-center gap-4">
-                            <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">{cat}</h3>
-                            <div className="h-px flex-1 bg-black/5" />
+                            <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">{cat}</h3>
+                            <div className="h-px flex-1 bg-white/5" />
                           </div>
                           <div className="grid grid-cols-1 gap-4">
                             {rules.filter(r => r.category === cat).map(r => (
-                              <div key={r.id} className="p-6 bg-white border border-black/5 rounded-2xl flex items-center justify-between gap-8 hover:shadow-md transition-all duration-300 group">
+                              <div key={r.id} className="p-6 bg-[#141414] border border-white/5 rounded-2xl flex items-center justify-between gap-8 hover:shadow-md transition-all duration-300 group">
                                 <div className="flex items-center gap-5">
-                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${r.enabled ? 'bg-[#d97757]/10 text-[#d97757]' : 'bg-black/5 text-[#6b6b6b]'}`}>
+                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${r.enabled ? 'bg-[#d97757]/10 text-[#d97757]' : 'bg-white/5 text-[#a3a3a3]'}`}>
                                     {cat === 'Filesystem' ? <FileText size={20} /> : cat === 'Database' ? <Database size={20} /> : <Network size={20} />}
                                   </div>
                                   <div>
-                                    <div className="text-[15px] font-bold text-[#1a1a1a] tracking-tight">{r.name}</div>
-                                    <div className="text-[12px] text-[#6b6b6b] mt-1 font-medium opacity-70">{r.description}</div>
+                                    <div className="text-[15px] font-bold text-[#f5f5f5] tracking-tight">{r.name}</div>
+                                    <div className="text-[12px] text-[#a3a3a3] mt-1 font-medium opacity-70">{r.description}</div>
                                   </div>
                                 </div>
                                 <Toggle 
@@ -581,29 +581,29 @@ export default function App() {
 
                 {activeTab === 'compliance' && (
                   <div className="space-y-12">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">Canadian Compliance</h2>
-                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">OSFI B-10/B-13 · PIPEDA · FINTRAC</span>
+                      <span className="text-[10.5px] text-[#a3a3a3] uppercase tracking-widest font-bold">OSFI B-10/B-13 · PIPEDA · FINTRAC</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <section className="space-y-6">
-                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">OSFI B-13 Technology Risk</h3>
-                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">OSFI B-13 Technology Risk</h3>
+                        <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-sm space-y-6">
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-blue-900/20 flex items-center justify-center text-blue-400 shrink-0">
                               <Shield size={20} />
                             </div>
                             <div>
-                              <div className="text-[14px] font-bold text-[#1a1a1a]">Cyber Resilience Guard</div>
-                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                              <div className="text-[14px] font-bold text-[#f5f5f5]">Cyber Resilience Guard</div>
+                              <p className="text-[12px] text-[#a3a3a3] mt-1 leading-relaxed">
                                 Monitoring for unauthorized system modifications and destructive patterns that threaten operational continuity in Canadian banking systems.
                               </p>
                             </div>
                           </div>
-                          <div className="pt-4 border-t border-black/5">
+                          <div className="pt-4 border-t border-white/5">
                             <div className="flex justify-between items-center text-[11px]">
-                              <span className="text-[#6b6b6b]">Compliance Status</span>
+                              <span className="text-[#a3a3a3]">Compliance Status</span>
                               <Badge variant="info">Aligned</Badge>
                             </div>
                           </div>
@@ -611,22 +611,22 @@ export default function App() {
                       </section>
 
                       <section className="space-y-6">
-                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">PIPEDA Data Privacy</h3>
-                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">PIPEDA Data Privacy</h3>
+                        <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-sm space-y-6">
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-orange-900/20 flex items-center justify-center text-orange-400 shrink-0">
                               <Eye size={20} />
                             </div>
                             <div>
-                              <div className="text-[14px] font-bold text-[#1a1a1a]">PII Interception</div>
-                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                              <div className="text-[14px] font-bold text-[#f5f5f5]">PII Interception</div>
+                              <p className="text-[12px] text-[#a3a3a3] mt-1 leading-relaxed">
                                 Real-time masking of Social Insurance Numbers (SIN), health cards, and other sensitive Canadian identifiers across all agentic workflows.
                               </p>
                             </div>
                           </div>
-                          <div className="pt-4 border-t border-black/5">
+                          <div className="pt-4 border-t border-white/5">
                             <div className="flex justify-between items-center text-[11px]">
-                              <span className="text-[#6b6b6b]">Privacy Rating</span>
+                              <span className="text-[#a3a3a3]">Privacy Rating</span>
                               <Badge variant="info">High</Badge>
                             </div>
                           </div>
@@ -668,9 +668,9 @@ export default function App() {
                 )}
                 {activeTab === 'engine' && (
                   <div className="space-y-12">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">Security Engine</h2>
-                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">Bastion Core v2.4.1 · Low-Latency Mode</span>
+                      <span className="text-[10.5px] text-[#a3a3a3] uppercase tracking-widest font-bold">Bastion Core v2.4.1 · Low-Latency Mode</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -681,11 +681,11 @@ export default function App() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       <section className="space-y-6">
-                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Engine Configuration</h3>
-                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">Engine Configuration</h3>
+                        <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-sm space-y-6">
                           <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                              <span className="text-[13px] font-bold text-[#1a1a1a]">Scan Intensity</span>
+                              <span className="text-[13px] font-bold text-[#f5f5f5]">Scan Intensity</span>
                               <Badge variant={scanIntensity === 'HIGH_PRECISION' ? 'info' : 'high'}>
                                 {scanIntensity === 'HIGH_PRECISION' ? 'Deep Analysis' : 'Turbo Mode'}
                               </Badge>
@@ -693,43 +693,43 @@ export default function App() {
                             <div className="grid grid-cols-2 gap-3">
                               <button 
                                 onClick={() => setScanIntensity('HIGH_PRECISION')}
-                                className={`p-4 rounded-xl border-2 transition-all text-left group ${scanIntensity === 'HIGH_PRECISION' ? 'border-[#d97757] bg-[#d97757]/5' : 'border-black/5 hover:border-black/10'}`}
+                                className={`p-4 rounded-xl border-2 transition-all text-left group ${scanIntensity === 'HIGH_PRECISION' ? 'border-[#d97757] bg-[#d97757]/5' : 'border-white/5 hover:border-white/10'}`}
                               >
-                                <div className={`text-[12px] font-bold mb-1 ${scanIntensity === 'HIGH_PRECISION' ? 'text-[#d97757]' : 'text-[#1a1a1a]'}`}>High Precision</div>
-                                <div className="text-[10px] text-[#6b6b6b] leading-relaxed">Maximum depth, multi-pass entropy checks.</div>
+                                <div className={`text-[12px] font-bold mb-1 ${scanIntensity === 'HIGH_PRECISION' ? 'text-[#d97757]' : 'text-[#f5f5f5]'}`}>High Precision</div>
+                                <div className="text-[10px] text-[#a3a3a3] leading-relaxed">Maximum depth, multi-pass entropy checks.</div>
                               </button>
                               <button 
                                 onClick={() => setScanIntensity('MAX_SPEED')}
-                                className={`p-4 rounded-xl border-2 transition-all text-left group ${scanIntensity === 'MAX_SPEED' ? 'border-[#d97757] bg-[#d97757]/5' : 'border-black/5 hover:border-black/10'}`}
+                                className={`p-4 rounded-xl border-2 transition-all text-left group ${scanIntensity === 'MAX_SPEED' ? 'border-[#d97757] bg-[#d97757]/5' : 'border-white/5 hover:border-white/10'}`}
                               >
-                                <div className={`text-[12px] font-bold mb-1 ${scanIntensity === 'MAX_SPEED' ? 'text-[#d97757]' : 'text-[#1a1a1a]'}`}>Max Speed</div>
-                                <div className="text-[10px] text-[#6b6b6b] leading-relaxed">Optimized for low-latency, single-pass scan.</div>
+                                <div className={`text-[12px] font-bold mb-1 ${scanIntensity === 'MAX_SPEED' ? 'text-[#d97757]' : 'text-[#f5f5f5]'}`}>Max Speed</div>
+                                <div className="text-[10px] text-[#a3a3a3] leading-relaxed">Optimized for low-latency, single-pass scan.</div>
                               </button>
                             </div>
                           </div>
 
-                          <div className="pt-4 border-t border-black/5 space-y-4">
+                          <div className="pt-4 border-t border-white/5 space-y-4">
                             <div className="flex justify-between items-center">
-                              <span className="text-[11px] text-[#6b6b6b]">Expected Latency</span>
-                              <span className="text-[11px] font-mono font-bold text-[#1a1a1a]">
+                              <span className="text-[11px] text-[#a3a3a3]">Expected Latency</span>
+                              <span className="text-[11px] font-mono font-bold text-[#f5f5f5]">
                                 {scanIntensity === 'HIGH_PRECISION' ? '~8.5ms' : '< 1.2ms'}
                               </span>
                             </div>
                             <div className="flex justify-between items-center">
-                              <span className="text-[11px] text-[#6b6b6b]">Detection Sensitivity</span>
-                              <span className="text-[11px] font-bold text-[#1a1a1a]">
+                              <span className="text-[11px] text-[#a3a3a3]">Detection Sensitivity</span>
+                              <span className="text-[11px] font-bold text-[#f5f5f5]">
                                 {scanIntensity === 'HIGH_PRECISION' ? 'Ultra (99.9%)' : 'Standard (94%)'}
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Performance Metrics</h3>
-                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-8">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">Performance Metrics</h3>
+                        <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-sm space-y-8">
                           <div className="space-y-4">
                             <div className="flex justify-between items-end">
-                              <span className="text-[12px] font-bold text-[#1a1a1a]">Scan Latency Distribution</span>
-                              <span className="text-[10px] text-[#6b6b6b] font-mono">Real-time (Last 60s)</span>
+                              <span className="text-[12px] font-bold text-[#f5f5f5]">Scan Latency Distribution</span>
+                              <span className="text-[10px] text-[#a3a3a3] font-mono">Real-time (Last 60s)</span>
                             </div>
                             <div className="h-24 flex items-end gap-1">
                               {[40, 35, 45, 30, 55, 40, 35, 60, 45, 50, 30, 40, 35, 45, 30, 55, 40, 35, 60, 45].map((h, i) => (
@@ -742,7 +742,7 @@ export default function App() {
                                 />
                               ))}
                             </div>
-                            <div className="flex justify-between text-[10px] text-[#6b6b6b] font-bold uppercase tracking-widest pt-2 border-t border-black/5">
+                            <div className="flex justify-between text-[10px] text-[#a3a3a3] font-bold uppercase tracking-widest pt-2 border-t border-white/5">
                               <span>0ms</span>
                               <span>2.5ms</span>
                               <span>5.0ms</span>
@@ -750,58 +750,58 @@ export default function App() {
                           </div>
 
                           <div className="grid grid-cols-2 gap-6">
-                            <div className="p-4 bg-black/[0.02] rounded-xl border border-black/5">
-                              <div className="text-[10px] text-[#6b6b6b] font-bold uppercase mb-1">CPU Usage</div>
-                              <div className="text-xl font-serif font-bold text-[#1a1a1a]">0.8%</div>
+                            <div className="p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                              <div className="text-[10px] text-[#a3a3a3] font-bold uppercase mb-1">CPU Usage</div>
+                              <div className="text-xl font-serif font-bold text-[#f5f5f5]">0.8%</div>
                             </div>
-                            <div className="p-4 bg-black/[0.02] rounded-xl border border-black/5">
-                              <div className="text-[10px] text-[#6b6b6b] font-bold uppercase mb-1">Active Threads</div>
-                              <div className="text-xl font-serif font-bold text-[#1a1a1a]">4</div>
+                            <div className="p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                              <div className="text-[10px] text-[#a3a3a3] font-bold uppercase mb-1">Active Threads</div>
+                              <div className="text-xl font-serif font-bold text-[#f5f5f5]">4</div>
                             </div>
                           </div>
                         </div>
                       </section>
 
                       <section className="space-y-6">
-                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Heuristic Analysis</h3>
-                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold opacity-60">Heuristic Analysis</h3>
+                        <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-sm space-y-6">
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-blue-900/20 flex items-center justify-center text-blue-400 shrink-0">
                               <Search size={20} />
                             </div>
                             <div>
-                              <div className="text-[14px] font-bold text-[#1a1a1a]">Entropy-Based Detection</div>
-                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                              <div className="text-[14px] font-bold text-[#f5f5f5]">Entropy-Based Detection</div>
+                              <p className="text-[12px] text-[#a3a3a3] mt-1 leading-relaxed">
                                 BastionAudit uses Shannon entropy calculations to identify high-randomness strings (API keys, secrets) that bypass traditional regex patterns.
                               </p>
                             </div>
                           </div>
 
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-orange-900/20 flex items-center justify-center text-orange-400 shrink-0">
                               <Database size={20} />
                             </div>
                             <div>
-                              <div className="text-[14px] font-bold text-[#1a1a1a]">Semantic Interception</div>
-                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
-                                Beyond simple string matching, the engine analyzes command context to detect destructive patterns like <code className="bg-black/5 px-1 rounded">rm -rf /</code> or unauthorized database exfiltration.
+                              <div className="text-[14px] font-bold text-[#f5f5f5]">Semantic Interception</div>
+                              <p className="text-[12px] text-[#a3a3a3] mt-1 leading-relaxed">
+                                Beyond simple string matching, the engine analyzes command context to detect destructive patterns like <code className="bg-white/10 px-1 rounded">rm -rf /</code> or unauthorized database exfiltration.
                               </p>
                             </div>
                           </div>
 
-                          <div className="pt-4 border-t border-black/5">
+                          <div className="pt-4 border-t border-white/5">
                             <div className="flex items-center justify-between mb-3">
-                              <span className="text-[11px] font-bold text-[#1a1a1a]">Engine Health</span>
+                              <span className="text-[11px] font-bold text-[#f5f5f5]">Engine Health</span>
                               <Badge variant="info">Optimized</Badge>
                             </div>
                             <div className="space-y-2">
                               <div className="flex justify-between text-[11px]">
-                                <span className="text-[#6b6b6b]">Uptime</span>
-                                <span className="text-[#1a1a1a] font-mono">14d 06h 22m</span>
+                                <span className="text-[#a3a3a3]">Uptime</span>
+                                <span className="text-[#f5f5f5] font-mono">14d 06h 22m</span>
                               </div>
                               <div className="flex justify-between text-[11px]">
-                                <span className="text-[#6b6b6b]">Last Pattern Sync</span>
-                                <span className="text-[#1a1a1a]">2026-03-22 09:14 UTC</span>
+                                <span className="text-[#a3a3a3]">Last Pattern Sync</span>
+                                <span className="text-[#f5f5f5]">2026-03-22 09:14 UTC</span>
                               </div>
                             </div>
                           </div>
@@ -823,9 +823,9 @@ export default function App() {
 
                 {activeTab === 'log' && (
                   <div className="space-y-8">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">Audit Log</h2>
-                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">SECURITY_AUDIT.md · session 2026-03-22</span>
+                      <span className="text-[10.5px] text-[#a3a3a3] uppercase tracking-widest font-bold">SECURITY_AUDIT.md · session 2026-03-22</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -835,7 +835,7 @@ export default function App() {
                     </div>
 
                     <section className="space-y-4">
-                      <h3 className="text-[10px] uppercase tracking-widest text-[#6b6b6b] font-bold">Recent Events</h3>
+                      <h3 className="text-[10px] uppercase tracking-widest text-[#a3a3a3] font-bold">Recent Events</h3>
                       <div className="space-y-1">
                         <LogEntry id="INC-001" type="Write intercept" path="/etc/cron.d" time="14:07:33" severity="CRITICAL" status="OPEN" />
                         <LogEntry id="INC-002" type="SSN detected" path="env var" time="11:22:14" severity="HIGH" status="DONE" />
@@ -847,7 +847,7 @@ export default function App() {
 
                 {activeTab === 'plugin-files' && (
                   <div className="space-y-8">
-                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                    <div className="flex items-baseline justify-between border-b border-white/5 pb-4">
                       <h2 className="text-2xl font-serif font-medium">Plugin Files</h2>
                       <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">Generated artifacts for Claude Code</span>
                     </div>
@@ -934,78 +934,78 @@ You are equipped with the BastionAudit security engine.
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-[700px] bg-white border border-red-200 rounded-2xl overflow-hidden shadow-2xl"
+              className="w-full max-w-[700px] bg-[#141414] border border-red-900/30 rounded-2xl overflow-hidden shadow-2xl"
             >
-              <div className="bg-[#f3f2ef] border-b border-black/5 p-4 px-6 flex items-center gap-3">
+              <div className="bg-[#1c1c1c] border-b border-white/5 p-4 px-6 flex items-center gap-3">
                 <div className="flex gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
                   <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
                   <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
                 </div>
-                <span className="text-[10px] text-[#6b6b6b] uppercase tracking-widest mx-auto font-bold">safe-code-audit — zsh — /workspace</span>
+                <span className="text-[10px] text-[#a3a3a3] uppercase tracking-widest mx-auto font-bold">safe-code-audit — zsh — /workspace</span>
               </div>
 
-              <div className="p-8 border-l-[4px] border-red-500 bg-red-50/30">
+              <div className="p-8 border-l-[4px] border-red-500 bg-red-950/10">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="bg-red-500 text-white text-[10px] font-bold tracking-widest px-3 py-1 rounded-full shadow-lg shadow-red-500/20">
                     INTERCEPT
                   </div>
-                  <h3 className="text-red-600 font-serif font-bold text-lg tracking-tight">Bastion Audit Alert</h3>
-                  <span className="ml-auto text-[11px] text-[#6b6b6b] font-medium">2026-03-22 · 14:07:33 UTC</span>
+                  <h3 className="text-red-500 font-serif font-bold text-lg tracking-tight">Bastion Audit Alert</h3>
+                  <span className="ml-auto text-[11px] text-[#a3a3a3] font-medium">2026-03-22 · 14:07:33 UTC</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-[12px]">
-                  <div className="flex justify-between border-b border-black/5 pb-1"><span className="text-[#6b6b6b]">Session ID</span><span className="text-[#1a1a1a] font-mono">BA-20260322-9F3A</span></div>
-                  <div className="flex justify-between border-b border-black/5 pb-1"><span className="text-[#6b6b6b]">Tool type</span><span className="text-red-600 font-bold">Write / Bash</span></div>
-                  <div className="flex justify-between border-b border-black/5 pb-1"><span className="text-[#6b6b6b]">Target path</span><span className="text-orange-600 font-medium">/etc/cron.d/backup</span></div>
-                  <div className="flex justify-between border-b border-black/5 pb-1"><span className="text-[#6b6b6b]">Environment</span><span className="text-[#1a1a1a]">prod-gke-cluster</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-[#a3a3a3]">Session ID</span><span className="text-[#f5f5f5] font-mono">BA-20260322-9F3A</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-[#a3a3a3]">Tool type</span><span className="text-red-500 font-bold">Write / Bash</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-[#a3a3a3]">Target path</span><span className="text-orange-500 font-medium">/etc/cron.d/backup</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-[#a3a3a3]">Environment</span><span className="text-[#f5f5f5]">prod-gke-cluster</span></div>
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-[#6b6b6b] font-bold text-[10px] uppercase tracking-widest mb-3">▸ Threat Analysis</div>
-                  <div className="bg-white border border-red-100 p-5 rounded-xl shadow-sm">
+                  <div className="text-[#a3a3a3] font-bold text-[10px] uppercase tracking-widest mb-3">▸ Threat Analysis</div>
+                  <div className="bg-[#1c1c1c] border border-red-900/20 p-5 rounded-xl shadow-sm">
                     <div className="flex items-center gap-3 mb-3">
                       <Badge variant="crit">Critical</Badge>
-                      <span className="text-red-600 font-bold text-[14px]">Privileged write to system crontab</span>
+                      <span className="text-red-400 font-bold text-[14px]">Privileged write to system crontab</span>
                     </div>
                     <div className="space-y-2 text-[12px]">
-                      <div className="flex gap-4"><span className="w-24 text-[#6b6b6b]">Matched rule</span><span className="text-[#1a1a1a]">RULE-SYS-0091 · CIS Linux 5.1.3</span></div>
-                      <div className="flex gap-4"><span className="w-24 text-[#6b6b6b]">Pattern</span><span className="text-orange-600">write → /etc/cron* · root escalation</span></div>
-                      <div className="flex gap-4"><span className="w-24 text-[#6b6b6b]">Risk vector</span><span className="text-red-600 font-medium">Persistence · privilege escalation</span></div>
+                      <div className="flex gap-4"><span className="w-24 text-[#a3a3a3]">Matched rule</span><span className="text-[#f5f5f5]">RULE-SYS-0091 · CIS Linux 5.1.3</span></div>
+                      <div className="flex gap-4"><span className="w-24 text-[#a3a3a3]">Pattern</span><span className="text-orange-400">write → /etc/cron* · root escalation</span></div>
+                      <div className="flex gap-4"><span className="w-24 text-[#a3a3a3]">Risk vector</span><span className="text-red-400 font-medium">Persistence · privilege escalation</span></div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-[#6b6b6b] font-bold text-[10px] uppercase tracking-widest mb-3">▸ Severity</div>
+                  <div className="text-[#a3a3a3] font-bold text-[10px] uppercase tracking-widest mb-3">▸ Severity</div>
                   <div className="flex gap-1.5 mb-3">
                     {[1,2,3,4,5].map(i => <div key={i} className="h-2.5 flex-1 bg-red-500 rounded-full" />)}
-                    {[6,7,8,9,10].map(i => <div key={i} className="h-2.5 flex-1 bg-black/5 rounded-full" />)}
+                    {[6,7,8,9,10].map(i => <div key={i} className="h-2.5 flex-1 bg-white/5 rounded-full" />)}
                   </div>
-                  <div className="text-[11px] text-[#6b6b6b]">CRITICAL 5/10 · Regulatory exposure: SOC2 CC6.2 · estimated $80K–$2M impact</div>
+                  <div className="text-[11px] text-[#a3a3a3]">CRITICAL 5/10 · Regulatory exposure: SOC2 CC6.2 · estimated $80K–$2M impact</div>
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-[#6b6b6b] font-bold text-[10px] uppercase tracking-widest mb-3">▸ Action Required</div>
-                  <div className="bg-blue-50/50 border border-blue-100 p-5 rounded-xl space-y-3">
+                  <div className="text-[#a3a3a3] font-bold text-[10px] uppercase tracking-widest mb-3">▸ Action Required</div>
+                  <div className="bg-blue-950/20 border border-blue-900/30 p-5 rounded-xl space-y-3">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant="info">Remediation available</Badge>
                     </div>
-                    <RemediationStep n={1} text={<>Use <span className="text-blue-600 font-medium">systemd timers</span> instead of crontab for auditable scheduling</>} />
-                    <RemediationStep n={2} text={<>Write backup output to <span className="text-blue-600 font-medium">/secure/backups/</span> with strict 0600 permissions</>} />
-                    <RemediationStep n={3} text={<>Run backup process under dedicated <span className="text-blue-600 font-medium">backup-svc</span> user, not root</>} />
+                    <RemediationStep n={1} text={<>Use <span className="text-blue-400 font-medium">systemd timers</span> instead of crontab for auditable scheduling</>} />
+                    <RemediationStep n={2} text={<>Write backup output to <span className="text-blue-400 font-medium">/secure/backups/</span> with strict 0600 permissions</>} />
+                    <RemediationStep n={3} text={<>Run backup process under dedicated <span className="text-blue-400 font-medium">backup-svc</span> user, not root</>} />
                   </div>
                 </div>
 
-                <div className="mt-10 pt-6 border-t border-black/5">
-                  <div className="text-[#1a1a1a] font-bold mb-5 text-[14px]">Command blocked. Select an action:</div>
+                <div className="mt-10 pt-6 border-t border-white/5">
+                  <div className="text-[#f5f5f5] font-bold mb-5 text-[14px]">Command blocked. Select an action:</div>
                   <div className="flex flex-wrap gap-4">
                     <button onClick={() => handleAlertAction('ABORT')} className="flex-1 px-6 py-3 rounded-xl bg-red-600 text-white font-bold text-[12px] tracking-widest hover:bg-red-700 transition-all uppercase shadow-lg shadow-red-600/20">Abort Command</button>
-                    <button onClick={() => handleAlertAction('MASK')} className="flex-1 px-6 py-3 rounded-xl border border-orange-200 bg-orange-50 text-orange-700 font-bold text-[12px] tracking-widest hover:bg-orange-100 transition-all uppercase">Mask & Remediate</button>
-                    <button onClick={() => handleAlertAction('REVIEW')} className="flex-1 px-6 py-3 rounded-xl border border-black/10 text-[#6b6b6b] font-bold text-[12px] tracking-widest hover:bg-black/5 transition-all uppercase">Review Manually</button>
+                    <button onClick={() => handleAlertAction('MASK')} className="flex-1 px-6 py-3 rounded-xl border border-orange-900/50 bg-orange-950/30 text-orange-400 font-bold text-[12px] tracking-widest hover:bg-orange-900/50 transition-all uppercase">Mask & Remediate</button>
+                    <button onClick={() => handleAlertAction('REVIEW')} className="flex-1 px-6 py-3 rounded-xl border border-white/10 text-[#a3a3a3] font-bold text-[12px] tracking-widest hover:bg-white/5 transition-all uppercase">Review Manually</button>
                   </div>
-                  <div className="mt-6 text-[11px] text-[#6b6b6b] flex justify-between items-center">
-                    <span>Auto-abort in <span className="text-red-600 font-bold">{countdown}</span>s</span>
+                  <div className="mt-6 text-[11px] text-[#a3a3a3] flex justify-between items-center">
+                    <span>Auto-abort in <span className="text-red-500 font-bold">{countdown}</span>s</span>
                     <span className="font-mono">Ref: BA-20260322-9F3A</span>
                   </div>
                 </div>
@@ -1023,7 +1023,7 @@ You are equipped with the BastionAudit security engine.
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="absolute bottom-20 right-0 w-[400px] h-[550px] bg-white border border-black/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+              className="absolute bottom-20 right-0 w-[400px] h-[550px] bg-[#141414] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
             >
               <div className="bg-[#d97757] p-6 text-white flex items-center justify-between shadow-lg">
                 <div className="flex items-center gap-3">
@@ -1050,25 +1050,25 @@ You are equipped with the BastionAudit security engine.
                 </button>
               </div>
               
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#fbfaf8]">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#0d0d0d]">
                 {chatMessages.length === 0 && (
                   <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">
                     <Shield size={48} className="text-[#d97757]" />
-                    <p className="text-[13px] font-medium max-w-[200px]">
+                    <p className="text-[13px] font-medium max-w-[200px] text-[#a3a3a3]">
                       Ask me about OSFI B-13 compliance, PIPEDA data privacy, or Canadian data residency.
                     </p>
                   </div>
                 )}
                 {chatMessages.map((m, i) => (
                   <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] p-4 rounded-2xl text-[13px] leading-relaxed ${m.role === 'user' ? 'bg-[#d97757] text-white rounded-tr-none shadow-md' : 'bg-white border border-black/5 text-[#1a1a1a] rounded-tl-none shadow-sm'}`}>
+                    <div className={`max-w-[85%] p-4 rounded-2xl text-[13px] leading-relaxed ${m.role === 'user' ? 'bg-[#d97757] text-white rounded-tr-none shadow-md' : 'bg-[#1c1c1c] border border-white/5 text-[#f5f5f5] rounded-tl-none shadow-sm'}`}>
                       {m.content}
                     </div>
                   </div>
                 ))}
                 {isChatLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-white border border-black/5 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-2">
+                    <div className="bg-[#1c1c1c] border border-white/5 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-2">
                       <div className="w-1.5 h-1.5 bg-[#d97757] rounded-full animate-bounce" />
                       <div className="w-1.5 h-1.5 bg-[#d97757] rounded-full animate-bounce [animation-delay:0.2s]" />
                       <div className="w-1.5 h-1.5 bg-[#d97757] rounded-full animate-bounce [animation-delay:0.4s]" />
@@ -1077,13 +1077,13 @@ You are equipped with the BastionAudit security engine.
                 )}
               </div>
 
-              <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-black/5 flex gap-3">
+              <form onSubmit={handleSendMessage} className="p-4 bg-[#141414] border-t border-white/5 flex gap-3">
                 <input 
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Ask the security assistant..."
-                  className="flex-1 bg-black/[0.03] border-none outline-none rounded-xl px-4 py-3 text-[13px] font-medium placeholder:text-[#6b6b6b]/40"
+                  className="flex-1 bg-white/[0.03] border-none outline-none rounded-xl px-4 py-3 text-[13px] font-medium text-[#f5f5f5] placeholder:text-[#a3a3a3]/40"
                 />
                 <button 
                   type="submit"
@@ -1121,9 +1121,9 @@ function NavItem({ active, onClick, icon, label }: { active: boolean, onClick: (
   return (
     <button 
       onClick={onClick}
-      className={`w-full flex items-center gap-4 px-8 py-3.5 text-[13px] transition-all border-l-[3px] group ${active ? 'text-[#1a1a1a] bg-[#d97757]/5 border-[#d97757] font-bold' : 'text-[#6b6b6b] border-transparent hover:text-[#1a1a1a] hover:bg-black/[0.02]'}`}
+      className={`w-full flex items-center gap-4 px-8 py-3.5 text-[13px] transition-all border-l-[3px] group ${active ? 'text-[#f5f5f5] bg-[#d97757]/10 border-[#d97757] font-bold' : 'text-[#a3a3a3] border-transparent hover:text-[#f5f5f5] hover:bg-white/[0.02]'}`}
     >
-      <div className={`transition-transform duration-300 group-hover:scale-110 ${active ? 'text-[#d97757]' : 'text-[#6b6b6b]'}`}>{icon}</div>
+      <div className={`transition-transform duration-300 group-hover:scale-110 ${active ? 'text-[#d97757]' : 'text-[#a3a3a3]'}`}>{icon}</div>
       {label}
     </button>
   );
@@ -1131,10 +1131,10 @@ function NavItem({ active, onClick, icon, label }: { active: boolean, onClick: (
 
 function StatCard({ label, value, color }: { label: string, value: string, color: string }) {
   return (
-    <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 group">
-      <div className="text-[10px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold mb-4 opacity-60 group-hover:opacity-100 transition-opacity">{label}</div>
+    <div className="bg-[#141414] border border-white/5 rounded-2xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 group">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-[#a3a3a3] font-bold mb-4 opacity-60 group-hover:opacity-100 transition-opacity">{label}</div>
       <div className={`text-4xl font-serif font-bold tracking-tight ${color}`}>{value}</div>
-      <div className="mt-4 h-1 w-8 bg-black/5 rounded-full overflow-hidden">
+      <div className="mt-4 h-1 w-8 bg-white/5 rounded-full overflow-hidden">
         <div className={`h-full w-2/3 ${color.replace('text-', 'bg-')} opacity-40`} />
       </div>
     </div>
@@ -1143,16 +1143,16 @@ function StatCard({ label, value, color }: { label: string, value: string, color
 
 function LogEntry({ id, type, path, time, severity, status }: any) {
   return (
-    <div className="flex items-center justify-between py-4 border-b border-black/5 group hover:bg-black/2 cursor-pointer transition-colors">
+    <div className="flex items-center justify-between py-4 border-b border-white/5 group hover:bg-white/[0.02] cursor-pointer transition-colors">
       <div>
-        <div className={`text-[13px] font-medium ${severity === 'CRITICAL' ? 'text-red-600' : 'text-amber-600'}`}>
+        <div className={`text-[13px] font-medium ${severity === 'CRITICAL' ? 'text-red-500' : 'text-amber-500'}`}>
           {id} · {type} · {path}
         </div>
-        <div className="text-[11px] text-[#6b6b6b] mt-1">
+        <div className="text-[11px] text-[#a3a3a3] mt-1">
           {time} · {severity} · {status === 'OPEN' ? 'Pending review' : 'Resolved'}
         </div>
       </div>
-      <span className={`text-[10px] font-bold tracking-widest px-2 py-1 rounded border ${status === 'OPEN' ? 'text-red-500 border-red-100 bg-red-50' : 'text-[#3ddc84] border-green-100 bg-green-50'}`}>
+      <span className={`text-[10px] font-bold tracking-widest px-2 py-1 rounded border ${status === 'OPEN' ? 'text-red-400 border-red-900/50 bg-red-950/30' : 'text-[#3ddc84] border-green-900/50 bg-green-950/30'}`}>
         {status}
       </span>
     </div>
@@ -1161,8 +1161,8 @@ function LogEntry({ id, type, path, time, severity, status }: any) {
 
 function RemediationStep({ n, text }: { n: number, text: React.ReactNode }) {
   return (
-    <div className="flex gap-3 text-[12px] text-[#6b6b6b]">
-      <span className="text-[#1a1a1a] font-medium">{n}.</span>
+    <div className="flex gap-3 text-[12px] text-[#a3a3a3]">
+      <span className="text-[#f5f5f5] font-medium">{n}.</span>
       <span>{text}</span>
     </div>
   );
@@ -1170,16 +1170,16 @@ function RemediationStep({ n, text }: { n: number, text: React.ReactNode }) {
 
 function IntegrationItem({ name, status, icon }: { name: string, status: string, icon: React.ReactNode }) {
   return (
-    <div className="bg-white border border-black/5 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300">
+    <div className="bg-[#141414] border border-white/5 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center text-[#6b6b6b]">
+        <div className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-[#a3a3a3]">
           {icon}
         </div>
-        <span className="text-[12px] font-bold text-[#1a1a1a]">{name}</span>
+        <span className="text-[12px] font-bold text-[#f5f5f5]">{name}</span>
       </div>
       <div className="flex items-center gap-1.5">
         <div className={`w-1.5 h-1.5 rounded-full ${status === 'Active' || status === 'Connected' ? 'bg-[#3ddc84]' : 'bg-amber-400'}`} />
-        <span className="text-[10px] font-bold text-[#6b6b6b] uppercase tracking-wider">{status}</span>
+        <span className="text-[10px] font-bold text-[#a3a3a3] uppercase tracking-wider">{status}</span>
       </div>
     </div>
   );
@@ -1195,20 +1195,20 @@ function FileView({ name, path, content }: { name: string, path: string, content
   };
 
   return (
-    <div className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-sm">
-      <div className="bg-[#f3f2ef] border-b border-black/5 px-5 py-3 flex items-center justify-between">
+    <div className="bg-[#141414] border border-white/5 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[#1c1c1c] border-b border-white/5 px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <FileText size={16} className="text-[#6b6b6b]" />
-          <span className="text-[12px] font-bold text-[#1a1a1a]">{name}</span>
-          <span className="text-[11px] text-[#6b6b6b] font-normal">{path}</span>
+          <FileText size={16} className="text-[#a3a3a3]" />
+          <span className="text-[12px] font-bold text-[#f5f5f5]">{name}</span>
+          <span className="text-[11px] text-[#a3a3a3] font-normal">{path}</span>
         </div>
         <div className="flex gap-2">
-          <button onClick={copy} className="p-1.5 text-[#6b6b6b] hover:text-[#1a1a1a] transition-colors relative">
+          <button onClick={copy} className="p-1.5 text-[#a3a3a3] hover:text-[#f5f5f5] transition-colors relative">
             {copied ? <CheckCircle2 size={16} className="text-[#3ddc84]" /> : <Copy size={16} />}
           </button>
         </div>
       </div>
-      <pre className="p-6 text-[12px] text-[#1a1a1a] overflow-x-auto bg-[#fbfaf8] font-mono leading-relaxed">
+      <pre className="p-6 text-[12px] text-[#f5f5f5] overflow-x-auto bg-[#0d0d0d] font-mono leading-relaxed">
         <code>{content}</code>
       </pre>
     </div>
@@ -1217,28 +1217,28 @@ function FileView({ name, path, content }: { name: string, path: string, content
 
 function Footer() {
   return (
-    <footer className="bg-[#fbfaf8] border-t border-black/5 py-16 px-8 mt-20">
+    <footer className="bg-[#0a0a0a] border-t border-white/5 py-16 px-8 mt-20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="col-span-1 md:col-span-1 space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#d97757] flex items-center justify-center text-white shadow-lg shadow-[#d97757]/20">
               <Shield size={20} />
             </div>
-            <span className="text-[18px] font-serif font-bold tracking-tight text-[#1a1a1a]">BastionAudit</span>
+            <span className="text-[18px] font-serif font-bold tracking-tight text-[#f5f5f5]">BastionAudit</span>
           </div>
-          <p className="text-[13px] text-[#6b6b6b] leading-relaxed max-w-[240px]">
+          <p className="text-[13px] text-[#a3a3a3] leading-relaxed max-w-[240px]">
             Advanced security auditing and compliance for the Canadian financial services industry. 
             Trusted by Canada's Big Five banks.
           </p>
-          <div className="flex items-center gap-4 text-[#6b6b6b]">
+          <div className="flex items-center gap-4 text-[#a3a3a3]">
             <Award size={18} className="text-[#d97757]" />
             <span className="text-[11px] font-bold uppercase tracking-widest">OSFI Compliant</span>
           </div>
         </div>
 
         <div className="space-y-6">
-          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a] font-bold">Canadian Compliance</h4>
-          <ul className="space-y-4 text-[13px] text-[#6b6b6b]">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#f5f5f5] font-bold">Canadian Compliance</h4>
+          <ul className="space-y-4 text-[13px] text-[#a3a3a3]">
             <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
               <ChevronRight size={14} /> OSFI B-10 Third-Party Risk
             </li>
@@ -1255,8 +1255,8 @@ function Footer() {
         </div>
 
         <div className="space-y-6">
-          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a] font-bold">Financial Services</h4>
-          <ul className="space-y-4 text-[13px] text-[#6b6b6b]">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#f5f5f5] font-bold">Financial Services</h4>
+          <ul className="space-y-4 text-[13px] text-[#a3a3a3]">
             <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
               <Globe size={14} /> Canadian Data Residency
             </li>
@@ -1273,26 +1273,26 @@ function Footer() {
         </div>
 
         <div className="space-y-6">
-          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a] font-bold">Resources</h4>
-          <div className="bg-white border border-black/5 rounded-2xl p-6 shadow-sm">
-            <p className="text-[12px] text-[#6b6b6b] leading-relaxed mb-4">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#f5f5f5] font-bold">Resources</h4>
+          <div className="bg-[#141414] border border-white/5 rounded-2xl p-6 shadow-sm">
+            <p className="text-[12px] text-[#a3a3a3] leading-relaxed mb-4">
               Need help with your OSFI B-13 audit? Our security experts are available 24/7.
             </p>
-            <button className="w-full py-2.5 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-black transition-colors">
+            <button className="w-full py-2.5 bg-[#f5f5f5] text-[#0a0a0a] text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-colors">
               Contact Support
             </button>
           </div>
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-black/5 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="text-[11px] text-[#6b6b6b] font-medium">
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="text-[11px] text-[#a3a3a3] font-medium">
           © 2026 BastionAudit Security. All rights reserved. Registered in Toronto, ON.
         </div>
-        <div className="flex gap-8 text-[11px] text-[#6b6b6b] font-bold uppercase tracking-widest">
-          <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">Privacy Policy</span>
-          <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">Terms of Service</span>
-          <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">Security Disclosure</span>
+        <div className="flex gap-8 text-[11px] text-[#a3a3a3] font-bold uppercase tracking-widest">
+          <span className="hover:text-[#f5f5f5] cursor-pointer transition-colors">Privacy Policy</span>
+          <span className="hover:text-[#f5f5f5] cursor-pointer transition-colors">Terms of Service</span>
+          <span className="hover:text-[#f5f5f5] cursor-pointer transition-colors">Security Disclosure</span>
         </div>
       </div>
     </footer>
