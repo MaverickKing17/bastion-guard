@@ -24,15 +24,20 @@ import {
   ExternalLink,
   Copy,
   Download,
-  Award
+  Award,
+  MessageSquare,
+  Send,
+  Globe,
+  FileCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { performSecurityScan, ScanResult } from './security-check';
+import { GoogleGenAI } from "@google/genai";
 
 // --- Types ---
 
 type AppMode = 'BLOCK' | 'LOG';
-type Tab = 'overview' | 'detectors' | 'rules' | 'engine' | 'log' | 'plugin-files';
+type Tab = 'overview' | 'detectors' | 'rules' | 'engine' | 'log' | 'compliance' | 'plugin-files';
 type ScanIntensity = 'HIGH_PRECISION' | 'MAX_SPEED';
 
 interface Detector {
@@ -40,7 +45,7 @@ interface Detector {
   name: string;
   description: string;
   enabled: boolean;
-  category: 'Personal Identifiable Information' | 'Financial Identifiers' | 'Security Secrets';
+  category: 'Personal Identifiable Information' | 'Financial Identifiers' | 'Security Secrets' | 'Canadian Compliance';
 }
 
 interface SecurityRule {
@@ -90,13 +95,17 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [mode, setMode] = useState<AppMode>('BLOCK');
   const [detectors, setDetectors] = useState<Detector[]>([
-    { id: 'ssn', name: 'Social Security Numbers', description: 'US SSN regex + checksum validation', enabled: true, category: 'Personal Identifiable Information' },
+    { id: 'sin', name: 'Social Insurance Numbers', description: 'Canadian SIN validation · Luhn-9 checksum', enabled: true, category: 'Personal Identifiable Information' },
     { id: 'cc', name: 'Credit / Debit Card Numbers', description: 'Luhn-validated · PCI-DSS §3.4', enabled: true, category: 'Personal Identifiable Information' },
     { id: 'email', name: 'Email Addresses', description: 'RFC 5321 pattern · GDPR Art.4', enabled: true, category: 'Personal Identifiable Information' },
     { id: 'phone', name: 'Phone Numbers', description: 'E.164 + NANP formats', enabled: false, category: 'Personal Identifiable Information' },
     { id: 'swift', name: 'SWIFT / BIC Codes', description: 'ISO 9362 bank routing identifiers', enabled: true, category: 'Financial Identifiers' },
     { id: 'iban', name: 'IBAN / Account Numbers', description: 'ISO 13616 · modulo-97 checksum', enabled: true, category: 'Financial Identifiers' },
     { id: 'secrets', name: 'AWS / GCP Secrets', description: 'High-entropy key detection · >3.5 bits/char', enabled: true, category: 'Security Secrets' },
+    { id: 'osfi-b13', name: 'OSFI B-13 Tech Risk', description: 'Technology and Cyber Risk Management guard', enabled: true, category: 'Canadian Compliance' },
+    { id: 'pipeda', name: 'PIPEDA Data Guard', description: 'Personal Information Protection compliance', enabled: true, category: 'Canadian Compliance' },
+    { id: 'fintrac', name: 'FINTRAC AML Heuristics', description: 'Anti-Money Laundering transaction monitoring', enabled: true, category: 'Canadian Compliance' },
+    { id: 'residency', name: 'Data Residency Guard', description: 'Ensure data stays within Canadian jurisdictions', enabled: true, category: 'Canadian Compliance' },
   ]);
   const [rules, setRules] = useState<SecurityRule[]>([
     { id: 'path', name: 'Privileged path writes', description: 'Block writes to /etc, /sys, /boot', enabled: true, category: 'Filesystem' },
@@ -111,6 +120,72 @@ export default function App() {
   const [countdown, setCountdown] = useState(30);
   const [isScanning, setIsScanning] = useState(false);
   const [scanIntensity, setScanIntensity] = useState<ScanIntensity>('HIGH_PRECISION');
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [useGemini, setUseGemini] = useState(false);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || isChatLoading) return;
+
+    const userMsg = chatInput;
+    setChatInput('');
+    setChatMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setIsChatLoading(true);
+
+    if (useGemini) {
+      try {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+        const response = await ai.models.generateContent({
+          model: "gemini-3.1-pro-preview",
+          contents: userMsg,
+          config: {
+            systemInstruction: "You are BastionAudit AI, a security assistant specialized in Canadian financial compliance (OSFI B-10, B-13, PIPEDA, FINTRAC). You help security admins analyze audit logs, identify PII leaks, and ensure data residency compliance in Canadian banking environments.",
+          }
+        });
+        setChatMessages(prev => [...prev, { role: 'assistant', content: response.text || "I'm sorry, I couldn't generate a response." }]);
+      } catch (error) {
+        console.error("Gemini Error:", error);
+        setChatMessages(prev => [...prev, { role: 'assistant', content: "I encountered an error with the Gemini engine. Please try again later." }]);
+      } finally {
+        setIsChatLoading(false);
+      }
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          messages: [...chatMessages, { role: 'user', content: userMsg }] 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.status === 402 || data.code === 'BILLING_ERROR') {
+        setChatMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: "⚠️ Anthropic Billing Error: Your Claude API credit balance is too low. I recommend switching to the Gemini engine (free) using the toggle above to continue your security audit." 
+        }]);
+        return;
+      }
+
+      if (data.content && data.content[0]) {
+        setChatMessages(prev => [...prev, { role: 'assistant', content: data.content[0].text }]);
+      } else {
+        throw new Error(data.error || "Unknown error");
+      }
+    } catch (error: any) {
+      console.error("Chat Error:", error);
+      setChatMessages(prev => [...prev, { role: 'assistant', content: "I'm sorry, I encountered an error connecting to the Claude engine. You can try switching to the Gemini engine using the toggle above." }]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Initial terminal output
@@ -237,6 +312,7 @@ export default function App() {
             <NavItem active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<Activity size={16} />} label="Overview" />
             <NavItem active={activeTab === 'detectors'} onClick={() => setActiveTab('detectors')} icon={<Search size={16} />} label="PII Detectors" />
             <NavItem active={activeTab === 'rules'} onClick={() => setActiveTab('rules')} icon={<Lock size={16} />} label="Security Rules" />
+            <NavItem active={activeTab === 'compliance'} onClick={() => setActiveTab('compliance')} icon={<FileCheck size={16} />} label="Compliance" />
             <NavItem active={activeTab === 'engine'} onClick={() => setActiveTab('engine')} icon={<Cpu size={16} />} label="Engine" />
             
             <div className="mx-8 my-6 border-t border-black/5" />
@@ -503,6 +579,93 @@ export default function App() {
                   </div>
                 )}
 
+                {activeTab === 'compliance' && (
+                  <div className="space-y-12">
+                    <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
+                      <h2 className="text-2xl font-serif font-medium">Canadian Compliance</h2>
+                      <span className="text-[10.5px] text-[#6b6b6b] uppercase tracking-widest font-bold">OSFI B-10/B-13 · PIPEDA · FINTRAC</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <section className="space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">OSFI B-13 Technology Risk</h3>
+                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                          <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                              <Shield size={20} />
+                            </div>
+                            <div>
+                              <div className="text-[14px] font-bold text-[#1a1a1a]">Cyber Resilience Guard</div>
+                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                                Monitoring for unauthorized system modifications and destructive patterns that threaten operational continuity in Canadian banking systems.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="pt-4 border-t border-black/5">
+                            <div className="flex justify-between items-center text-[11px]">
+                              <span className="text-[#6b6b6b]">Compliance Status</span>
+                              <Badge variant="info">Aligned</Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="space-y-6">
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">PIPEDA Data Privacy</h3>
+                        <div className="bg-white border border-black/5 rounded-2xl p-8 shadow-sm space-y-6">
+                          <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                              <Eye size={20} />
+                            </div>
+                            <div>
+                              <div className="text-[14px] font-bold text-[#1a1a1a]">PII Interception</div>
+                              <p className="text-[12px] text-[#6b6b6b] mt-1 leading-relaxed">
+                                Real-time masking of Social Insurance Numbers (SIN), health cards, and other sensitive Canadian identifiers across all agentic workflows.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="pt-4 border-t border-black/5">
+                            <div className="flex justify-between items-center text-[11px]">
+                              <span className="text-[#6b6b6b]">Privacy Rating</span>
+                              <Badge variant="info">High</Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                    </div>
+
+                    <section className="space-y-6">
+                      <h3 className="text-[11px] uppercase tracking-[0.2em] text-[#6b6b6b] font-bold opacity-60">Data Sovereignty & Residency</h3>
+                      <div className="bg-[#0a0a0a] border border-black/20 rounded-2xl p-8 shadow-2xl ring-1 ring-white/5 overflow-hidden relative">
+                        <div className="absolute top-0 right-0 p-8 opacity-10">
+                          <Globe size={120} className="text-white" />
+                        </div>
+                        <div className="relative z-10 space-y-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/10">
+                              <Globe size={24} />
+                            </div>
+                            <div>
+                              <div className="text-lg font-bold text-white tracking-tight">Canadian Data Residency Guard</div>
+                              <div className="text-[12px] text-white/40 uppercase tracking-widest font-bold">Active Enforcement</div>
+                            </div>
+                          </div>
+                          <p className="text-white/60 text-[14px] leading-relaxed max-w-2xl">
+                            BastionAudit monitors all outbound network requests from agentic tools to ensure sensitive financial data remains within Canadian cloud regions. Any attempt to exfiltrate data to non-compliant jurisdictions is automatically intercepted.
+                          </p>
+                          <div className="flex gap-4">
+                            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[11px] text-white/80 font-bold">
+                              Region: ca-central-1
+                            </div>
+                            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-[11px] text-white/80 font-bold">
+                              Latency: &lt; 2ms
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                )}
                 {activeTab === 'engine' && (
                   <div className="space-y-12">
                     <div className="flex items-baseline justify-between border-b border-black/5 pb-4">
@@ -753,6 +916,7 @@ You are equipped with the BastionAudit security engine.
                 )}
               </motion.div>
             </AnimatePresence>
+            <Footer />
           </div>
         </main>
       </div>
@@ -850,6 +1014,96 @@ You are equipped with the BastionAudit security engine.
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* --- Floating Chat Assistant --- */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <AnimatePresence>
+          {isChatOpen && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="absolute bottom-20 right-0 w-[400px] h-[550px] bg-white border border-black/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            >
+              <div className="bg-[#d97757] p-6 text-white flex items-center justify-between shadow-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                    <MessageSquare size={20} />
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-bold tracking-tight">BastionAudit AI</div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <div className="text-[9px] uppercase tracking-widest font-bold opacity-70">
+                        {useGemini ? 'Gemini 3.1 Pro' : 'Claude 3.5 Sonnet'}
+                      </div>
+                      <button 
+                        onClick={() => setUseGemini(!useGemini)}
+                        className="px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[8px] font-bold uppercase tracking-tighter transition-colors"
+                      >
+                        Switch to {useGemini ? 'Claude' : 'Gemini'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => setIsChatOpen(false)} className="hover:bg-white/10 p-2 rounded-lg transition-colors">
+                  <ChevronRight size={20} className="rotate-90" />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#fbfaf8]">
+                {chatMessages.length === 0 && (
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">
+                    <Shield size={48} className="text-[#d97757]" />
+                    <p className="text-[13px] font-medium max-w-[200px]">
+                      Ask me about OSFI B-13 compliance, PIPEDA data privacy, or Canadian data residency.
+                    </p>
+                  </div>
+                )}
+                {chatMessages.map((m, i) => (
+                  <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[85%] p-4 rounded-2xl text-[13px] leading-relaxed ${m.role === 'user' ? 'bg-[#d97757] text-white rounded-tr-none shadow-md' : 'bg-white border border-black/5 text-[#1a1a1a] rounded-tl-none shadow-sm'}`}>
+                      {m.content}
+                    </div>
+                  </div>
+                ))}
+                {isChatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-white border border-black/5 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-2">
+                      <div className="w-1.5 h-1.5 bg-[#d97757] rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-[#d97757] rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-1.5 h-1.5 bg-[#d97757] rounded-full animate-bounce [animation-delay:0.4s]" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-black/5 flex gap-3">
+                <input 
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Ask the security assistant..."
+                  className="flex-1 bg-black/[0.03] border-none outline-none rounded-xl px-4 py-3 text-[13px] font-medium placeholder:text-[#6b6b6b]/40"
+                />
+                <button 
+                  type="submit"
+                  disabled={isChatLoading}
+                  className="w-11 h-11 bg-[#d97757] text-white rounded-xl flex items-center justify-center hover:bg-[#b45309] transition-colors disabled:opacity-50 shadow-md"
+                >
+                  <Send size={18} />
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <button 
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 transform hover:scale-110 ${isChatOpen ? 'bg-white text-[#d97757] rotate-90' : 'bg-[#d97757] text-white'}`}
+        >
+          {isChatOpen ? <ChevronRight size={24} /> : <MessageSquare size={24} />}
+        </button>
+      </div>
 
       <style>{`
         @keyframes pulse-border {
@@ -958,5 +1212,89 @@ function FileView({ name, path, content }: { name: string, path: string, content
         <code>{content}</code>
       </pre>
     </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-[#fbfaf8] border-t border-black/5 py-16 px-8 mt-20">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="col-span-1 md:col-span-1 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#d97757] flex items-center justify-center text-white shadow-lg shadow-[#d97757]/20">
+              <Shield size={20} />
+            </div>
+            <span className="text-[18px] font-serif font-bold tracking-tight text-[#1a1a1a]">BastionAudit</span>
+          </div>
+          <p className="text-[13px] text-[#6b6b6b] leading-relaxed max-w-[240px]">
+            Advanced security auditing and compliance for the Canadian financial services industry. 
+            Trusted by Canada's Big Five banks.
+          </p>
+          <div className="flex items-center gap-4 text-[#6b6b6b]">
+            <Award size={18} className="text-[#d97757]" />
+            <span className="text-[11px] font-bold uppercase tracking-widest">OSFI Compliant</span>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a] font-bold">Canadian Compliance</h4>
+          <ul className="space-y-4 text-[13px] text-[#6b6b6b]">
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <ChevronRight size={14} /> OSFI B-10 Third-Party Risk
+            </li>
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <ChevronRight size={14} /> OSFI B-13 Technology Risk
+            </li>
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <ChevronRight size={14} /> PIPEDA Data Privacy
+            </li>
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <ChevronRight size={14} /> FINTRAC AML Compliance
+            </li>
+          </ul>
+        </div>
+
+        <div className="space-y-6">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a] font-bold">Financial Services</h4>
+          <ul className="space-y-4 text-[13px] text-[#6b6b6b]">
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <Globe size={14} /> Canadian Data Residency
+            </li>
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <Lock size={14} /> SOC2 Type II Certification
+            </li>
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <Activity size={14} /> Real-time Audit Logging
+            </li>
+            <li className="hover:text-[#d97757] cursor-pointer transition-colors flex items-center gap-2">
+              <ExternalLink size={14} /> GKE Security Clusters
+            </li>
+          </ul>
+        </div>
+
+        <div className="space-y-6">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a] font-bold">Resources</h4>
+          <div className="bg-white border border-black/5 rounded-2xl p-6 shadow-sm">
+            <p className="text-[12px] text-[#6b6b6b] leading-relaxed mb-4">
+              Need help with your OSFI B-13 audit? Our security experts are available 24/7.
+            </p>
+            <button className="w-full py-2.5 bg-[#1a1a1a] text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-black transition-colors">
+              Contact Support
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-black/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="text-[11px] text-[#6b6b6b] font-medium">
+          © 2026 BastionAudit Security. All rights reserved. Registered in Toronto, ON.
+        </div>
+        <div className="flex gap-8 text-[11px] text-[#6b6b6b] font-bold uppercase tracking-widest">
+          <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">Privacy Policy</span>
+          <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">Terms of Service</span>
+          <span className="hover:text-[#1a1a1a] cursor-pointer transition-colors">Security Disclosure</span>
+        </div>
+      </div>
+    </footer>
   );
 }

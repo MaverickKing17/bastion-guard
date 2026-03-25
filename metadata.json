@@ -1,5 +1,5 @@
 {
-  "name": "BastionAudit: Safe Code Plugin",
-  "description": "A high-performance security scanner and configuration dashboard for agentic workflows, featuring real-time PII detection and command interception.",
+  "name": "BastionAudit: Canadian FI Edition",
+  "description": "Enterprise security scanner for Canadian financial institutions, featuring OSFI B-10/B-13 compliance, PIPEDA-grade PII detection, and Claude-powered audit analysis.",
   "requestFramePermissions": []
 }
